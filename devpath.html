@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>devpath — zero to full-stack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#f6f7fb;
+    --bg-2:#eef1f8;
+    --surface:#ffffff;
+    --ink:#0a0a0b;
+    --ink-2:#3f3f46;
+    --muted:#71717a;
+    --border:#e6e7ee;
+    --border-strong:#d6d8e3;
+    --accent:#2563eb;
+    --accent-hover:#1d4ed8;
+    --accent-soft:#eef3ff;
+    --accent-ring:rgba(37,99,235,.18);
+    --done:#16a34a;
+    --done-soft:#ecfdf3;
+    --dot:rgba(37,99,235,.14);
+    --shadow:0 1px 2px rgba(10,10,20,.04), 0 8px 24px rgba(10,10,30,.05);
+    --code-bg:#0d0e12;
+    --code-ink:#e6e7ee;
+  }
+  [data-theme="dark"]{
+    --bg:#0b0c10;
+    --bg-2:#0f1117;
+    --surface:#14161d;
+    --ink:#f4f5f9;
+    --ink-2:#c3c6d1;
+    --muted:#8a8f9e;
+    --border:#232633;
+    --border-strong:#2c3040;
+    --accent:#5b8dff;
+    --accent-hover:#79a2ff;
+    --accent-soft:#161d2e;
+    --accent-ring:rgba(91,141,255,.22);
+    --done:#3ecf8e;
+    --done-soft:#132018;
+    --dot:rgba(91,141,255,.18);
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 30px rgba(0,0,0,.35);
+    --code-bg:#05060a;
+    --code-ink:#e6e7ee;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--ink-2);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    transition:background .3s ease,color .3s ease;
+  }
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+
+  /* ---------- top progress + nav ---------- */
+  .topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 82%,transparent);
+    backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--border)}
+  .progress-rail{height:3px;background:transparent}
+  .progress-fill{height:3px;width:0%;background:var(--accent);transition:width .4s cubic-bezier(.2,.8,.2,1)}
+  nav{display:flex;align-items:center;justify-content:space-between;height:62px;gap:18px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--ink);letter-spacing:-.02em;font-size:16px}
+  .brand .mark{font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:700;font-size:17px;
+    border:1px solid var(--border-strong);border-radius:8px;padding:2px 7px;background:var(--surface)}
+  .nav-links{display:flex;gap:26px;align-items:center}
+  .nav-links a{font-size:14px;color:var(--muted);font-weight:500;transition:color .2s}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-right{display:flex;align-items:center;gap:10px}
+  .pct{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);font-weight:600;
+    background:var(--accent-soft);border:1px solid var(--border);padding:5px 10px;border-radius:8px;white-space:nowrap}
+  .icon-btn{width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--border);
+    background:var(--surface);border-radius:8px;cursor:pointer;color:var(--ink-2);transition:.2s}
+  .icon-btn:hover{border-color:var(--border-strong);color:var(--ink)}
+  @media(max-width:820px){.nav-links{display:none}}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;overflow:hidden;padding:78px 0 34px;text-align:center}
+  .hero::before{content:"";position:absolute;inset:0;z-index:0;
+    background-image:radial-gradient(var(--dot) 1.1px,transparent 1.1px);
+    background-size:22px 22px;
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,#000 40%,transparent 100%);
+    mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,#000 40%,transparent 100%)}
+  .hero > *{position:relative;z-index:1}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:'JetBrains Mono',monospace;font-size:12.5px;
+    color:var(--accent);background:var(--surface);border:1px solid var(--border);
+    padding:7px 14px;border-radius:999px;letter-spacing:.01em;box-shadow:var(--shadow)}
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+  h1{font-size:clamp(2.6rem,6vw,4.6rem);line-height:1.02;letter-spacing:-.035em;color:var(--ink);
+    font-weight:800;margin:22px 0 0}
+  h1 .soft{color:var(--muted);font-weight:800}
+  .sub{max-width:640px;margin:20px auto 0;font-size:17px;color:var(--ink-2)}
+  .cta-row{display:flex;gap:12px;justify-content:center;margin-top:30px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:15px;
+    padding:12px 20px;border-radius:11px;cursor:pointer;border:1px solid transparent;transition:.2s}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-hover);transform:translateY(-1px)}
+  .btn-ghost{background:var(--surface);color:var(--ink);border-color:var(--border-strong)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .term{max-width:430px;margin:22px auto 0;background:var(--code-bg);border-radius:11px;
+    padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--code-ink);
+    display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);cursor:pointer;text-align:left}
+  .term .prompt{color:var(--accent)}
+  .term .blink{width:8px;height:16px;background:var(--accent);display:inline-block;margin-left:auto;
+    animation:blink 1.1s steps(2,start) infinite;border-radius:1px}
+  @keyframes blink{to{opacity:0}}
+
+  /* ---------- section shells ---------- */
+  section{padding:52px 0}
+  .sec-head{margin-bottom:26px}
+  .sec-eyebrow{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--accent);
+    letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+  .sec-title{font-size:clamp(1.6rem,3.4vw,2.3rem);color:var(--ink);font-weight:800;letter-spacing:-.03em;margin-top:8px}
+  .sec-desc{max-width:640px;margin-top:10px;color:var(--ink-2);font-size:15.5px}
+
+  /* ---------- jargon buster ---------- */
+  .jargon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:12px}
+  .jcard{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:16px 17px;
+    transition:.2s}
+  .jcard:hover{border-color:var(--accent);box-shadow:var(--shadow);transform:translateY(-2px)}
+  .jterm{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--accent);font-size:14px;margin-bottom:6px}
+  .jdef{font-size:14px;color:var(--ink-2);line-height:1.55}
+
+  /* ---------- phase quick nav ---------- */
+  .quick{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+  .qpill{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:500;color:var(--muted);
+    border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:6px 12px;
+    cursor:pointer;transition:.18s;display:inline-flex;gap:7px;align-items:center}
+  .qpill:hover{border-color:var(--accent);color:var(--accent)}
+  .qpill .qnum{color:var(--accent);font-weight:600}
+  .qpill.complete{background:var(--done-soft);border-color:var(--done);color:var(--done)}
+  .qpill.complete .qnum{color:var(--done)}
+
+  /* ---------- search ---------- */
+  .toolbar{display:flex;gap:12px;align-items:center;margin:22px 0 26px;flex-wrap:wrap}
+  .search{flex:1;min-width:220px;display:flex;align-items:center;gap:10px;background:var(--surface);
+    border:1px solid var(--border);border-radius:11px;padding:11px 14px;transition:.2s}
+  .search:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-ring)}
+  .search input{border:none;outline:none;background:transparent;font-size:15px;color:var(--ink);
+    width:100%;font-family:'Inter',sans-serif}
+  .search svg{flex:none;color:var(--muted)}
+  .toggle{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-2);
+    cursor:pointer;user-select:none;border:1px solid var(--border);background:var(--surface);
+    padding:10px 14px;border-radius:11px;font-weight:500;transition:.2s}
+  .toggle:hover{border-color:var(--border-strong)}
+  .toggle input{accent-color:var(--accent);width:15px;height:15px}
+
+  /* ---------- phase cards ---------- */
+  .phase{background:var(--surface);border:1px solid var(--border);border-radius:16px;margin-bottom:16px;
+    overflow:hidden;transition:border-color .2s,box-shadow .2s}
+  .phase:hover{box-shadow:var(--shadow)}
+  .phase.done{border-color:var(--done)}
+  .p-head{display:flex;align-items:flex-start;gap:16px;padding:20px 22px;cursor:pointer;position:relative}
+  .p-num{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;color:#fff;background:var(--accent);
+    width:42px;height:42px;border-radius:11px;display:grid;place-items:center;flex:none;transition:.25s}
+  .phase.done .p-num{background:var(--done)}
+  .p-meta{flex:1;min-width:0}
+  .p-title{font-size:18px;color:var(--ink);font-weight:700;letter-spacing:-.02em;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .p-tag{font-size:14px;color:var(--ink-2);margin-top:4px}
+  .p-chips{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}
+  .chip{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:500;padding:4px 9px;border-radius:7px;
+    border:1px solid var(--border);color:var(--muted);background:var(--bg-2)}
+  .chip.lvl{color:var(--accent);background:var(--accent-soft);border-color:transparent}
+  .p-right{display:flex;flex-direction:column;align-items:flex-end;gap:9px;flex:none}
+  .p-ring{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--muted);font-weight:600}
+  .p-ring.full{color:var(--done)}
+  .chev{width:22px;height:22px;color:var(--muted);transition:transform .3s;flex:none}
+  .phase.open .chev{transform:rotate(180deg)}
+  .mini-rail{height:5px;background:var(--bg-2);border-radius:99px;overflow:hidden;width:100%}
+  .mini-fill{height:100%;width:0;background:var(--accent);transition:width .35s ease;border-radius:99px}
+  .phase.done .mini-fill{background:var(--done)}
+
+  .p-body{display:none;padding:0 22px 22px;border-top:1px solid var(--border)}
+  .phase.open .p-body{display:block;animation:slidein .3s ease}
+  @keyframes slidein{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+  .body-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:26px;padding-top:20px}
+  @media(max-width:760px){.body-grid{grid-template-columns:1fr;gap:20px}.p-right .p-ring{display:none}}
+
+  .block-label{font-family:'JetBrains Mono',monospace;font-size:11.5px;text-transform:uppercase;
+    letter-spacing:.07em;color:var(--muted);font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .topics{list-style:none;display:flex;flex-direction:column;gap:2px}
+  .topic{display:flex;align-items:flex-start;gap:11px;padding:8px 10px;border-radius:9px;cursor:pointer;
+    transition:background .15s;font-size:14.5px;color:var(--ink-2)}
+  .topic:hover{background:var(--bg-2)}
+  .topic input{appearance:none;width:19px;height:19px;border:1.8px solid var(--border-strong);border-radius:6px;
+    flex:none;margin-top:1px;cursor:pointer;position:relative;transition:.15s}
+  .topic input:hover{border-color:var(--accent)}
+  .topic input:checked{background:var(--done);border-color:var(--done)}
+  .topic input:checked::after{content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;
+    border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+  .topic input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .topic.checked span{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--border-strong)}
+  .topic .flag{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--accent);
+    background:var(--accent-soft);padding:2px 6px;border-radius:5px;margin-left:6px;white-space:nowrap}
+
+  .side{display:flex;flex-direction:column;gap:20px}
+  .res-group{}
+  .res-list{display:flex;flex-direction:column;gap:7px}
+  .res{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink-2);
+    border:1px solid var(--border);background:var(--bg-2);border-radius:9px;padding:9px 12px;transition:.18s}
+  .res:hover{border-color:var(--accent);color:var(--accent);background:var(--surface)}
+  .res .tag{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;padding:2px 6px;border-radius:5px;flex:none}
+  .res .tag.hi{color:#c2410c;background:#fff2e8}
+  .res .tag.en{color:var(--accent);background:var(--accent-soft)}
+  [data-theme="dark"] .res .tag.hi{color:#fdba74;background:#2a1a0e}
+  .res .arrow{margin-left:auto;opacity:.4;flex:none}
+  .res:hover .arrow{opacity:1}
+  .project{background:var(--accent-soft);border:1px solid var(--border);border-radius:11px;padding:14px 16px}
+  .project .block-label{color:var(--accent)}
+  .project p{font-size:14px;color:var(--ink-2);line-height:1.55}
+
+  .empty{text-align:center;padding:60px 20px;color:var(--muted);font-size:15px;display:none}
+
+  /* ---------- footer ---------- */
+  footer{background:var(--code-bg);color:#c9cbd6;padding:60px 0 40px;margin-top:30px;position:relative;overflow:hidden}
+  footer::before{content:"";position:absolute;inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:24px 24px;
+    -webkit-mask-image:linear-gradient(180deg,#000,transparent 70%);mask-image:linear-gradient(180deg,#000,transparent 70%)}
+  footer > *{position:relative}
+  .foot-head{color:#fff;font-size:clamp(1.5rem,3.2vw,2.1rem);font-weight:800;letter-spacing:-.03em;max-width:620px}
+  .foot-sub{color:#9498a6;margin-top:12px;max-width:560px;font-size:15px}
+  .foot-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:30px}
+  .foot-links a{font-size:13.5px;color:#c9cbd6;border:1px solid #23252f;border-radius:9px;padding:11px 14px;
+    display:flex;align-items:center;justify-content:space-between;transition:.2s}
+  .foot-links a:hover{border-color:var(--accent);color:#fff;background:rgba(255,255,255,.03)}
+  .foot-bottom{margin-top:34px;padding-top:22px;border-top:1px solid #1e2029;font-size:12.5px;color:#71747f;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="progress-rail"><div class="progress-fill" id="topProgress"></div></div>
+  <div class="wrap">
+    <nav>
+      <div class="brand"><span class="mark">‹/›</span> devpath</div>
+      <div class="nav-links">
+        <a href="#start">Start here</a>
+        <a href="#jargon">Jargon buster</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#master">Best resources</a>
+      </div>
+      <div class="nav-right">
+        <span class="pct" id="pctBadge">0% done</span>
+        <button class="icon-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">
+          <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-btn" id="resetBtn" title="Reset progress" aria-label="Reset progress">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span> a zero-to-full-stack learning path · Hindi + English</span>
+    <h1>Learn to build the web.<br><span class="soft">From absolute zero.</span></h1>
+    <p class="sub">No prior dev knowledge assumed. Every scary word — Redis, Postman, npm, CORS — gets explained in plain language. Check things off as you go and watch your progress fill up.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#roadmap">Start the roadmap
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a class="btn btn-ghost" href="#jargon">Decode the jargon first</a>
+    </div>
+    <div class="term" onclick="document.getElementById('phase-0').scrollIntoView({behavior:'smooth'})" title="Jump to Phase 00">
+      <span class="prompt">$</span> <span class="mono">begin --phase 00 "how the web actually works"</span>
+      <span class="blink"></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- START HERE -->
+  <section id="start">
+    <div class="sec-head">
+      <div class="sec-eyebrow">// read this first</div>
+      <h2 class="sec-title">The one mental model to hold onto</h2>
+      <p class="sec-desc">Almost all of web development is one simple loop. A <b>client</b> (the browser) asks for something. A <b>server</b> answers. Everything else — HTML, CSS, React, Node, databases, Redis — is just detail hanging off those two words. Keep that picture in your head and nothing below will feel random.</p>
+    </div>
+    <div class="jargon-grid">
+      <div class="jcard"><div class="jterm">frontend</div><div class="jdef">Everything the user sees and clicks, running <b>in the browser</b>. Built with HTML, CSS and JavaScript (and React).</div></div>
+      <div class="jcard"><div class="jterm">backend</div><div class="jdef">The engine behind the scenes on a <b>server</b>: logic, rules, and talking to the database. Built with Node/Express here.</div></div>
+      <div class="jcard"><div class="jterm">full-stack</div><div class="jdef">You, by the end of this path — comfortable on both sides and able to wire them together.</div></div>
+      <div class="jcard"><div class="jterm">request → response</div><div class="jdef">The heartbeat of the web. Browser sends a request, server sends back a response. Repeat forever.</div></div>
+    </div>
+  </section>
+
+  <!-- JARGON -->
+  <section id="jargon">
+    <div class="sec-head">
+      <div class="sec-eyebrow">// jargon buster</div>
+      <h2 class="sec-title">The scary words, in plain English</h2>
+      <p class="sec-desc">These are the terms that make development feel like a wall. None of them are complicated once someone just tells you what they are. Come back here whenever a word trips you up.</p>
+    </div>
+    <div class="jargon-grid" id="jargonGrid"></div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section id="roadmap">
+    <div class="sec-head">
+      <div class="sec-eyebrow">// the roadmap · 12 phases · follow in order</div>
+      <h2 class="sec-title">Your path, phase by phase</h2>
+      <p class="sec-desc">Do these top to bottom. Tick each sub-topic once you understand it and have written a little code for it. Don't rush JavaScript (Phase 03) — it's the spine of everything after.</p>
+    </div>
+
+    <div class="quick" id="quickNav"></div>
+
+    <div class="toolbar">
+      <label class="search">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+        <input id="searchInput" type="text" placeholder="Search a topic, tool or word (e.g. flexbox, jwt, redis)…" aria-label="Search topics" />
+      </label>
+      <label class="toggle"><input type="checkbox" id="hideDone" /> Hide completed</label>
+    </div>
+
+    <div id="phaseList"></div>
+    <div class="empty" id="emptyState">No topics match that search. Try another word.</div>
+  </section>
+
+  <!-- MASTER RESOURCES -->
+  <section id="master">
+    <div class="sec-head">
+      <div class="sec-eyebrow">// keep these open in a tab forever</div>
+      <h2 class="sec-title">The reference shelf</h2>
+      <p class="sec-desc">Beyond any single course, these are the sources working developers actually return to. Bookmark them.</p>
+    </div>
+    <div class="jargon-grid" id="masterGrid"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-head">The only way through it is through it. Ship small, ship often.</div>
+    <p class="foot-sub">You don't need to feel ready — you need to build the ugly version, break it, and fix it. Twelve phases from now you'll be full-stack. Start with Phase 00 today.</p>
+    <div class="foot-links">
+      <a href="https://roadmap.sh/full-stack" target="_blank" rel="noopener">roadmap.sh <span>↗</span></a>
+      <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development" target="_blank" rel="noopener">MDN Learn <span>↗</span></a>
+      <a href="https://www.theodinproject.com" target="_blank" rel="noopener">The Odin Project <span>↗</span></a>
+      <a href="https://fullstackopen.com/en/" target="_blank" rel="noopener">Full Stack Open <span>↗</span></a>
+      <a href="https://www.youtube.com/@CodeWithHarry" target="_blank" rel="noopener">CodeWithHarry <span>↗</span></a>
+      <a href="https://www.youtube.com/@chaiaurcode" target="_blank" rel="noopener">Chai aur Code <span>↗</span></a>
+    </div>
+    <div class="foot-bottom">
+      <span class="mono">devpath · built for Harsh · progress saves in this browser</span>
+      <span class="mono" id="footPct">0 / 0 topics done</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ================= DATA ================= */
+const JARGON = [
+  ["API","A waiter between two programs. Your app places an order (\"give me the weather\"), another program brings back the data. A menu of requests you're allowed to make."],
+  ["REST API","Just a common set of rules for that waiter, over HTTP: GET to read, POST to create, PUT to update, DELETE to remove. Most backends you'll build are REST APIs."],
+  ["Postman","A tool to knock on your backend's door and see what it replies — without needing a frontend yet. Think of it as a remote control for testing your API."],
+  ["Redis","A super-fast notepad that lives in memory (RAM). Used to remember things temporarily — caches, login sessions — so you don't hit the slow database every single time."],
+  ["npm","The app store for code. Running <span class='mono'>npm install react</span> downloads someone else's code (a \"package\") into your project so you don't rebuild it yourself."],
+  ["Node.js","Lets JavaScript run outside the browser — like on a server. Same language you learn for the frontend, now powering your backend too."],
+  ["JSON","The plain-text format apps use to swap data. Looks like a JavaScript object: <span class='mono'>{ \"name\": \"Harsh\" }</span>. Frontend and backend talk in JSON."],
+  [".env / env vars","A hidden file to store secrets — passwords, API keys — outside your code, so you never accidentally push them to GitHub."],
+  ["CORS","A browser safety rule that blocks your frontend from calling a backend on a different address, until that backend explicitly says \"you're allowed.\" The classic beginner bug."],
+  ["Middleware","Code that runs in the middle of a request, before it reaches the final handler. Example: \"is this user logged in? if not, stop here.\""],
+  ["ORM","A translator between your code's objects and the database's tables, so you write clean code instead of raw SQL. Prisma and Mongoose are ORMs."],
+  ["Docker","Packs your app plus everything it needs into a sealed box (a \"container\"), so it runs the exact same way on your laptop and on a server. Kills \"works on my machine.\""],
+  ["JWT","A signed token the server hands you after login. You show it on every future request to prove who you are, without logging in again each time."],
+  ["The DOM","The browser's live, editable model of your HTML page. JavaScript changes the DOM, and the page updates on screen."],
+  ["SPA","Single-Page App. Loads once, then JavaScript swaps the content in place instead of full page reloads. Most React apps are SPAs."],
+  ["Deployment","Moving your app from \"works on my laptop\" to \"live on the internet with a link anyone can open.\""],
+];
+
+const MASTER = [
+  ["roadmap.sh","The visual dependency map of what to learn and in what order. Your bird's-eye view.","https://roadmap.sh/full-stack"],
+  ["MDN Web Docs","The dictionary of the web. When you forget how an HTML tag or JS method works, it's here.","https://developer.mozilla.org"],
+  ["The Odin Project","A free, project-heavy full curriculum in English. Great if you like learning by building.","https://www.theodinproject.com"],
+  ["JavaScript.info","The clearest deep-dive into JavaScript, from basics to advanced, all free.","https://javascript.info"],
+  ["freeCodeCamp","Interactive lessons + long project videos. Certifications for free.","https://www.freecodecamp.org"],
+  ["Full Stack Open","A rigorous, modern full-stack course (React, Node, GraphQL) from the University of Helsinki.","https://fullstackopen.com/en/"],
+  ["Frontend Mentor","Real design files to build into real responsive sites. Best way to practice HTML/CSS.","https://www.frontendmentor.io"],
+  ["react.dev","The official React docs — the new ones are genuinely a great tutorial.","https://react.dev/learn"],
+];
+
+const PHASES = [
+  {
+    num:"00", title:"How the web actually works", tag:"The mental model, before you write a single line of code.",
+    time:"3–5 hours", level:"Warm-up",
+    topics:[
+      "The internet vs. the web (they're different things)",
+      "Client & server: frontend vs backend vs full-stack",
+      "What happens when you type a URL and hit enter",
+      "HTTP & HTTPS, and status codes (200, 404, 500)",
+      ["What an \"API\" really is","start here"],
+      "URLs, domains, DNS and hosting — in plain terms",
+      "How the browser turns code into a page you see"
+    ],
+    project:"On paper, draw every hop that happens when you open youtube.com — keypress → DNS → server → response → screen.",
+    hi:[["CodeWithHarry — Web Dev intro","https://www.youtube.com/@CodeWithHarry/playlists"],["Apna College — Web Dev basics","https://www.youtube.com/@ApnaCollegeOfficial"]],
+    en:[["MDN — How the web works","https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto"],["roadmap.sh — full-stack map","https://roadmap.sh/full-stack"]]
+  },
+  {
+    num:"01", title:"HTML — the skeleton", tag:"Every page on earth is HTML underneath. Learn the structure.",
+    time:"~1 week", level:"Beginner",
+    topics:[
+      "Document boilerplate & basic structure",
+      "Headings, paragraphs and text",
+      "Links & images",
+      "Lists & tables",
+      "Forms & inputs (text, email, buttons, dropdowns)",
+      "Semantic tags (header, nav, main, section, footer)",
+      "Accessibility basics: alt text and labels"
+    ],
+    project:"Build a single-page profile/resume — pure HTML, no styling yet. Just clean structure.",
+    hi:[["CodeWithHarry — HTML course","https://www.youtube.com/@CodeWithHarry/playlists"],["Apna College — HTML","https://www.youtube.com/@ApnaCollegeOfficial"]],
+    en:[["MDN — HTML basics","https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content"],["W3Schools — HTML","https://www.w3schools.com/html/"]]
+  },
+  {
+    num:"02", title:"CSS — making it look good", tag:"Layout, color, and making sites work on every screen size.",
+    time:"~2 weeks", level:"Beginner",
+    topics:[
+      "Selectors, specificity and the cascade",
+      "The box model (margin, border, padding, content)",
+      "Colors, units (px, rem, %, vh/vw), typography",
+      "Flexbox — one-dimensional layouts",
+      "CSS Grid — two-dimensional layouts",
+      "Position, display, z-index",
+      "Responsive design & media queries",
+      "Transitions & simple animations",
+      ["Tailwind CSS — utility-first styling","optional"]
+    ],
+    project:"Recreate a simple landing page (even this one!) and make it fully responsive on mobile.",
+    hi:[["CodeWithHarry — CSS & Tailwind","https://www.youtube.com/@CodeWithHarry/playlists"],["Chai aur Code — CSS","https://www.youtube.com/@chaiaurcode"]],
+    en:[["MDN — CSS basics","https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics"],["Flexbox Froggy (game)","https://flexboxfroggy.com/"],["CSS-Tricks — Flexbox guide","https://css-tricks.com/snippets/css/a-guide-to-flexbox/"]]
+  },
+  {
+    num:"03", title:"JavaScript — the language of the web", tag:"The big one. This makes pages interactive. Go slow, build a lot.",
+    time:"4–6 weeks", level:"Core",
+    topics:[
+      "Variables (let/const) & data types",
+      "Operators, conditionals (if/else), loops",
+      "Functions & arrow functions",
+      "Arrays & objects (+ map, filter, reduce)",
+      "The DOM: selecting & changing elements",
+      "Events (click, input, submit)",
+      "ES6+: destructuring, spread, template literals, modules",
+      ["Async JS: callbacks → promises → async/await","don't skip"],
+      "The Fetch API & working with JSON",
+      "Error handling (try/catch)"
+    ],
+    project:"A to-do app (DOM practice) and a weather app that fetches live data from a public API.",
+    hi:[["CodeWithHarry — JavaScript","https://www.youtube.com/@CodeWithHarry/playlists"],["Chai aur Code — JavaScript","https://www.youtube.com/@chaiaurcode"],["Apna College — JS","https://www.youtube.com/@ApnaCollegeOfficial"]],
+    en:[["JavaScript.info","https://javascript.info/"],["MDN — JS guide","https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide"]]
+  },
+  {
+    num:"04", title:"Tools: Git, terminal, npm & Node", tag:"The developer's toolkit — and the command line, demystified.",
+    time:"~1 week", level:"Core",
+    topics:[
+      "Terminal / command line basics (cd, ls, mkdir)",
+      "Git: init, add, commit, branch, merge",
+      "GitHub: push, pull, clone, pull requests",
+      ["What Node.js is (JS outside the browser)","see jargon"],
+      ["What npm is + package.json explained","see jargon"],
+      "VS Code setup & essential extensions"
+    ],
+    project:"Push every project you've built so far to GitHub with clean commits and a proper README.",
+    hi:[["CodeWithHarry — Git & GitHub","https://www.youtube.com/@CodeWithHarry/playlists"],["Chai aur Code — Git","https://www.youtube.com/@chaiaurcode"]],
+    en:[["The Odin Project — Git","https://www.theodinproject.com/paths/foundations/courses/foundations"],["GitHub Docs — quickstart","https://docs.github.com/en/get-started"]]
+  },
+  {
+    num:"05", title:"React — modern frontend", tag:"Build real, dynamic interfaces the way the industry does.",
+    time:"3–4 weeks", level:"Frontend",
+    topics:[
+      "Why frameworks? Single-page apps (SPA)",
+      "Components & JSX",
+      "Props — passing data down",
+      "State & the useState hook",
+      "useEffect — side effects & fetching data",
+      "Handling events & forms in React",
+      "Rendering lists, keys & conditional rendering",
+      "React Router — multiple pages",
+      ["Vite — the modern project setup","use this, not CRA"],
+      ["Context API — shared state","optional"]
+    ],
+    project:"A movie-search app: React frontend calling a public movie API, with loading & error states.",
+    hi:[["Chai aur React (+GitHub)","https://github.com/hiteshchoudhary/chai-aur-react"],["CodeWithHarry — React","https://www.youtube.com/@CodeWithHarry/playlists"],["Apna College — React","https://www.youtube.com/@ApnaCollegeOfficial"]],
+    en:[["react.dev — official tutorial","https://react.dev/learn"],["Full Stack Open — Part 1","https://fullstackopen.com/en/part1"]]
+  },
+  {
+    num:"06", title:"Backend — Node.js & Express", tag:"The server side: where data, logic and your APIs live.",
+    time:"3–4 weeks", level:"Backend",
+    topics:[
+      "What a backend/server actually does",
+      "Node.js & the Express framework",
+      "Routes (GET, POST, PUT, DELETE)",
+      ["Middleware — what & why","see jargon"],
+      "Building a REST API (full CRUD)",
+      ["Postman — test your API with no frontend","demystified"],
+      ["Environment variables (.env)","see jargon"],
+      ["CORS — why the frontend gets blocked, and the fix","see jargon"]
+    ],
+    project:"A notes/tasks REST API you build and test entirely through Postman.",
+    hi:[["Chai aur Backend (JS) — playlist","https://www.youtube.com/playlist?list=PLu71SKxNbfoBGh_8p_NS-ZAh6v7HhYqHW"],["Piyush Garg — Node/Express","https://www.youtube.com/@piyushgargdev"]],
+    en:[["Node.js — official Learn","https://nodejs.org/en/learn"],["Express docs","https://expressjs.com/"],["Postman Learning Center","https://learning.postman.com/"]]
+  },
+  {
+    num:"07", title:"Databases", tag:"Where your data lives permanently — SQL, NoSQL and caching.",
+    time:"2–3 weeks", level:"Backend",
+    topics:[
+      "SQL vs NoSQL — when to use which",
+      "Relational DBs: PostgreSQL / MySQL, tables & relationships",
+      "Writing queries: SELECT, INSERT, JOIN",
+      "NoSQL: MongoDB (documents & collections)",
+      "ORMs/ODMs: Prisma (SQL) & Mongoose (Mongo)",
+      ["Redis — in-memory store for caching & sessions","demystified"],
+      "Basic schema & data modeling"
+    ],
+    project:"Swap the in-memory data in your Phase-06 API for a real database (MongoDB or Postgres).",
+    hi:[["Apna College — SQL & MongoDB","https://www.youtube.com/@ApnaCollegeOfficial"],["Piyush Garg — Mongo/Prisma","https://www.youtube.com/@piyushgargdev"]],
+    en:[["PostgreSQL Tutorial","https://www.postgresqltutorial.com/"],["MongoDB University","https://learn.mongodb.com/"],["Redis — docs","https://redis.io/docs/latest/"]]
+  },
+  {
+    num:"08", title:"Authentication & security", tag:"Letting users log in — and doing it safely.",
+    time:"1–2 weeks", level:"Backend",
+    topics:[
+      "Sessions vs tokens (JWT) — the two approaches",
+      ["Hashing passwords with bcrypt (never store plain text)","important"],
+      "The full signup / login flow, end to end",
+      "Protecting routes with auth middleware",
+      "OAuth / \"Login with Google\" — the concept",
+      "Keeping secrets safe (.env, never in Git)",
+      "Awareness: XSS, CSRF, SQL injection"
+    ],
+    project:"Add JWT signup/login to your app and lock the notes routes behind authentication.",
+    hi:[["Piyush Garg — Auth & JWT","https://www.youtube.com/@piyushgargdev"],["Chai aur Backend — auth","https://github.com/hiteshchoudhary/chai-backend"]],
+    en:[["The Odin Project — auth","https://www.theodinproject.com/paths/full-stack-javascript/courses/nodejs"],["OWASP Top 10 (awareness)","https://owasp.org/www-project-top-ten/"]]
+  },
+  {
+    num:"09", title:"Full-stack integration", tag:"Wire frontend + backend into one real, working app.",
+    time:"2–3 weeks", level:"Full-stack",
+    topics:[
+      "Connecting React (frontend) to Express (backend)",
+      "The MERN stack overview (Mongo, Express, React, Node)",
+      "Handling loading & error states from your API",
+      "File / image uploads (Multer, Cloudinary)",
+      ["Real-time basics: WebSockets / Socket.io","intro"],
+      "A sane folder structure for a full-stack project"
+    ],
+    project:"A complete MERN CRUD app with auth + database. This becomes your portfolio centerpiece.",
+    hi:[["Chai aur Code — full-stack","https://www.youtube.com/@chaiaurcode"],["Piyush Garg — full-stack","https://www.youtube.com/@piyushgargdev"]],
+    en:[["Full Stack Open — full course","https://fullstackopen.com/en/"],["freeCodeCamp — YouTube","https://www.youtube.com/@freecodecamp"]]
+  },
+  {
+    num:"10", title:"Deployment & DevOps basics", tag:"Get it live on the internet for anyone to open.",
+    time:"~1 week", level:"Ship it",
+    topics:[
+      "Hosting a frontend (Vercel / Netlify)",
+      "Hosting a backend (Render / Railway)",
+      "Environment variables in production",
+      "Connecting a custom domain",
+      ["Docker — package your app so it \"runs anywhere\"","demystified"],
+      ["CI/CD basics — what GitHub Actions does","intro"]
+    ],
+    project:"Deploy your MERN app and send the live link to a friend. That's the whole loop, done.",
+    hi:[["Piyush Garg — Docker & deploy","https://www.youtube.com/@piyushgargdev"],["Chai aur Code — deployment","https://www.youtube.com/@chaiaurcode"]],
+    en:[["Vercel docs","https://vercel.com/docs"],["Docker — Get started","https://docs.docker.com/get-started/"]]
+  },
+  {
+    num:"11", title:"Level up (when you're ready)", tag:"What to learn once you're comfortable and building things.",
+    time:"ongoing", level:"Optional",
+    topics:[
+      "TypeScript — typed JavaScript, now the industry default",
+      "Next.js — React + backend in one framework",
+      "Testing (Jest, React Testing Library)",
+      "System design basics",
+      "Performance & web fundamentals",
+      "Reading docs & debugging — the real long-term skill"
+    ],
+    project:"Rebuild one earlier project in Next.js + TypeScript to feel the difference.",
+    hi:[["Chai aur Code — Next.js/TS","https://www.youtube.com/@chaiaurcode"],["CodeWithHarry — Next.js","https://www.youtube.com/@CodeWithHarry/playlists"]],
+    en:[["TypeScript — docs","https://www.typescriptlang.org/docs/"],["Next.js — Learn","https://nextjs.org/learn"],["web.dev","https://web.dev/"]]
+  }
+];
+
+/* ================= STORAGE (safe: localStorage with in-memory fallback) ================= */
+const store = {
+  key:"devpath_progress_v1", data:{}, ok:false,
+  init(){ try{ const r=localStorage.getItem(this.key); this.data=r?JSON.parse(r):{}; this.ok=true; }catch(e){ this.data={}; this.ok=false; } },
+  get(k){ return !!this.data[k]; },
+  set(k,v){ if(v) this.data[k]=1; else delete this.data[k]; this.persist(); },
+  persist(){ try{ if(this.ok) localStorage.setItem(this.key, JSON.stringify(this.data)); }catch(e){} },
+  clear(){ this.data={}; this.persist(); }
+};
+store.init();
+
+/* ================= HELPERS ================= */
+const $ = s=>document.querySelector(s);
+const el = (t,c,h)=>{const e=document.createElement(t); if(c)e.className=c; if(h!=null)e.innerHTML=h; return e;};
+const tid = (p,i)=>`p${p}t${i}`;
+let totalTopics=0;
+PHASES.forEach(ph=>totalTopics+=ph.topics.length);
+
+/* ================= RENDER: jargon & master ================= */
+function renderCards(){
+  const jg=$("#jargonGrid");
+  JARGON.forEach(([term,def])=>{
+    const c=el("div","jcard");
+    c.appendChild(el("div","jterm",term));
+    c.appendChild(el("div","jdef",def));
+    jg.appendChild(c);
+  });
+  const mg=$("#masterGrid");
+  MASTER.forEach(([name,def,url])=>{
+    const a=el("a","jcard");
+    a.href=url; a.target="_blank"; a.rel="noopener";
+    a.appendChild(el("div","jterm",name+" ↗"));
+    a.appendChild(el("div","jdef",def));
+    mg.appendChild(a);
+  });
+}
+
+/* ================= RENDER: quick nav ================= */
+function renderQuick(){
+  const q=$("#quickNav");
+  PHASES.forEach((ph,pi)=>{
+    const pill=el("button","qpill",`<span class="qnum">${ph.num}</span> ${shortTitle(ph.title)}`);
+    pill.id="q"+pi;
+    pill.onclick=()=>{ const t=$("#phase-"+pi); t.classList.add("open"); syncChevrons(); t.scrollIntoView({behavior:"smooth",block:"start"}); };
+    q.appendChild(pill);
+  });
+}
+function shortTitle(t){ return t.split("—")[0].trim(); }
+
+/* ================= RENDER: phases ================= */
+function renderPhases(){
+  const list=$("#phaseList");
+  PHASES.forEach((ph,pi)=>{
+    const phase=el("div","phase"); phase.id="phase-"+pi; phase.dataset.pi=pi;
+
+    // head
+    const head=el("div","p-head");
+    const num=el("div","p-num",ph.num);
+    const meta=el("div","p-meta");
+    meta.appendChild(el("div","p-title",ph.title));
+    meta.appendChild(el("div","p-tag",ph.tag));
+    const chips=el("div","p-chips");
+    chips.appendChild(el("span","chip lvl",ph.level));
+    chips.appendChild(el("span","chip","⏱ "+ph.time));
+    chips.appendChild(el("span","chip",ph.topics.length+" topics"));
+    meta.appendChild(chips);
+
+    const right=el("div","p-right");
+    const ring=el("div","p-ring"); ring.id="ring-"+pi; ring.textContent="0/"+ph.topics.length;
+    const chev=el("div","", '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>');
+    right.appendChild(ring); right.appendChild(chev.firstChild);
+
+    head.appendChild(num); head.appendChild(meta); head.appendChild(right);
+    head.onclick=()=>{ phase.classList.toggle("open"); };
+
+    // mini progress rail under head
+    const railWrap=el("div","", ""); railWrap.style.padding="0 22px 16px";
+    const rail=el("div","mini-rail"); const fill=el("div","mini-fill"); fill.id="fill-"+pi;
+    rail.appendChild(fill); railWrap.appendChild(rail);
+
+    // body
+    const body=el("div","p-body");
+    const grid=el("div","body-grid");
+
+    // topics column
+    const tcol=el("div","");
+    tcol.appendChild(el("div","block-label","▸ topics to check off"));
+    const ul=el("ul","topics");
+    ph.topics.forEach((topic,ti)=>{
+      const label = Array.isArray(topic)?topic[0]:topic;
+      const flag  = Array.isArray(topic)?topic[1]:null;
+      const li=el("label","topic"); li.dataset.search=(label+" "+(flag||"")).toLowerCase();
+      const cb=el("input"); cb.type="checkbox"; cb.id=tid(pi,ti);
+      cb.checked=store.get(tid(pi,ti));
+      if(cb.checked) li.classList.add("checked");
+      const span=el("span",""); span.textContent=label;
+      if(flag){ const f=el("span","flag",flag); span.appendChild(f); }
+      cb.onchange=()=>{ store.set(tid(pi,ti),cb.checked); li.classList.toggle("checked",cb.checked); updatePhase(pi); updateTotal(); };
+      li.appendChild(cb); li.appendChild(span);
+      ul.appendChild(li);
+    });
+    tcol.appendChild(ul);
+
+    // side column
+    const side=el("div","side");
+    const proj=el("div","project");
+    proj.appendChild(el("div","block-label","★ build this"));
+    proj.appendChild(el("p","",ph.project));
+    side.appendChild(proj);
+
+    const hg=el("div","res-group");
+    hg.appendChild(el("div","block-label","🇮🇳 Hindi resources"));
+    const hl=el("div","res-list");
+    ph.hi.forEach(([n,u])=>hl.appendChild(resLink("hi","HI",n,u)));
+    hg.appendChild(hl); side.appendChild(hg);
+
+    const eg=el("div","res-group");
+    eg.appendChild(el("div","block-label","🌐 English resources"));
+    const eln=el("div","res-list");
+    ph.en.forEach(([n,u])=>eln.appendChild(resLink("en","EN",n,u)));
+    eg.appendChild(eln); side.appendChild(eg);
+
+    grid.appendChild(tcol); grid.appendChild(side);
+    body.appendChild(grid);
+
+    phase.appendChild(head);
+    phase.appendChild(railWrap);
+    phase.appendChild(body);
+    list.appendChild(phase);
+
+    updatePhase(pi);
+  });
+}
+function resLink(cls,tag,name,url){
+  const a=el("a","res"); a.href=url; a.target="_blank"; a.rel="noopener";
+  a.appendChild(el("span","tag "+cls,tag));
+  a.appendChild(el("span","",name));
+  a.appendChild(el("span","arrow","↗"));
+  return a;
+}
+
+/* ================= PROGRESS ================= */
+function phaseCount(pi){ let c=0; PHASES[pi].topics.forEach((_,ti)=>{ if(store.get(tid(pi,ti))) c++; }); return c; }
+function updatePhase(pi){
+  const total=PHASES[pi].topics.length, done=phaseCount(pi), pctv=Math.round(done/total*100);
+  const fill=$("#fill-"+pi); if(fill) fill.style.width=pctv+"%";
+  const ring=$("#ring-"+pi); if(ring){ ring.textContent=done+"/"+total; ring.classList.toggle("full",done===total); }
+  const phase=$("#phase-"+pi); if(phase) phase.classList.toggle("done",done===total && total>0);
+  const q=$("#q"+pi); if(q) q.classList.toggle("complete",done===total && total>0);
+}
+function updateTotal(){
+  let done=0; PHASES.forEach((_,pi)=>done+=phaseCount(pi));
+  const pctv=totalTopics? Math.round(done/totalTopics*100):0;
+  $("#topProgress").style.width=pctv+"%";
+  $("#pctBadge").textContent=pctv+"% done";
+  $("#footPct").textContent=done+" / "+totalTopics+" topics done";
+}
+
+/* ================= SEARCH & FILTER ================= */
+function applyFilter(){
+  const term=$("#searchInput").value.trim().toLowerCase();
+  const hideDone=$("#hideDone").checked;
+  let anyVisible=false;
+  document.querySelectorAll(".phase").forEach(phase=>{
+    const pi=+phase.dataset.pi;
+    let visibleTopics=0;
+    phase.querySelectorAll(".topic").forEach(t=>{
+      const cb=t.querySelector("input");
+      const matchText = !term || t.dataset.search.includes(term);
+      const matchDone = !hideDone || !cb.checked;
+      const show = matchText && matchDone;
+      t.style.display = show?"flex":"none";
+      if(show) visibleTopics++;
+    });
+    // phase title match keeps it visible even if topics filtered by text
+    const titleMatch = !term || (PHASES[pi].title+" "+PHASES[pi].level+" "+PHASES[pi].tag).toLowerCase().includes(term);
+    const phaseVisible = visibleTopics>0 || (titleMatch && !hideDone) || (titleMatch && term);
+    phase.style.display = phaseVisible?"":"none";
+    if(phaseVisible) anyVisible=true;
+    if(term && phaseVisible) phase.classList.add("open");
+  });
+  $("#emptyState").style.display = anyVisible?"none":"block";
+  syncChevrons();
+}
+function syncChevrons(){}
+
+/* ================= THEME ================= */
+function initTheme(){
+  let saved="light";
+  try{ saved=localStorage.getItem("devpath_theme")||"light"; }catch(e){}
+  setTheme(saved);
+  $("#themeBtn").onclick=()=>{
+    const cur=document.documentElement.getAttribute("data-theme");
+    setTheme(cur==="dark"?"light":"dark");
+  };
+}
+function setTheme(t){
+  document.documentElement.setAttribute("data-theme",t);
+  try{ localStorage.setItem("devpath_theme",t); }catch(e){}
+  const ic=$("#themeIcon");
+  if(t==="dark"){ ic.innerHTML='<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'; }
+  else{ ic.innerHTML='<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'; }
+}
+
+/* ================= RESET ================= */
+$("#resetBtn").onclick=()=>{
+  if(confirm("Reset all your progress? This can't be undone.")){
+    store.clear();
+    document.querySelectorAll(".topic input").forEach(cb=>{cb.checked=false; cb.closest(".topic").classList.remove("checked");});
+    PHASES.forEach((_,pi)=>updatePhase(pi));
+    updateTotal();
+  }
+};
+
+/* ================= INIT ================= */
+renderCards();
+renderQuick();
+renderPhases();
+updateTotal();
+initTheme();
+$("#searchInput").addEventListener("input",applyFilter);
+$("#hideDone").addEventListener("change",applyFilter);
+
+// open Phase 00 by default so it doesn't look empty
+$("#phase-0").classList.add("open");
+</script>
+</body>
+</html>
