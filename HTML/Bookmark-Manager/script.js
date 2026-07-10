@@ -1,0 +1,1 @@
+// alert("You are going to open a new window whenever you click the button. Do you want to continue?")

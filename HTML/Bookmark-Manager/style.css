@@ -1,0 +1,20 @@
+body {
+    background-color: #000000;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 50px;
+}
+
+h1 {
+    color: #cf4040;
+}
+
+a {
+    text-decoration: bold;
+    color: #007BFF;
+}
+
+p {
+    color: white;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
