@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SEO & Core-Web Vitals -->
+     <meta name="description" content="This is a simple HTML page that demonstrates the use of images, lists, and tables.">
     <title>Images, Lists, and Tables</title>
     <style>
         body {
@@ -16,16 +18,16 @@
 <body>
     <h1>Images, Lists, and Tables</h1>
     <h2>Images</h2>
-    <img src="pic.png" alt="A beautiful scenery" width="600" height="400">
+    <img src="pic.png" alt="Apple Display XDR" width="600" height="400">
     <h2>Lists</h2>
     <h3>Ordered List</h3>
-    <ol>
+    <ol type="1">
         <li>First item</li>
         <li>Second item</li>
         <li>Third item</li>
     </ol>
     <h3>Unordered List</h3>
-    <ul>
+    <ul type="circle">
         <li>First item</li>
         <li>Second item</li>
         <li>Third item</li>
@@ -47,7 +49,6 @@
                 <th>Name</th>
                 <th>Age</th>
                 <th>City</th>
-                <th>India</th>
             </tr>
         </thead>
         <tbody>
@@ -65,6 +66,9 @@
                 <td>Mike Johnson</td>
                 <td>35</td>
                 <td>Chicago</td>
+            </tr>
+            <tr>
+                <td colspan="3">This is a row that spans all three columns</td>
             </tr>
         </tbody>
         <tfoot>
