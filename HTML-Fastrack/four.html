@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form action="/submit" method="POST">
+        <label for="name">Full Name:</label>
+        <input type="text" id="name" name="name" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <button type="submit">Submit</button>
+
+        <input type="text" placeholder="Your name">
+        <input type="password" placeholder="Password">
+        <input type="email" placeholder="you@example.com">
+        <input type="number" min="1" max="10">
+        <input type="date">
+        <input type="checkbox" id="subscribe" name="subscribe">
+        <input type="radio" id="yes" name="agree" value="yes">
+        <input type="range" min="0" max="100">
+        <input type="file">
+        <input type="color">
+        <label for="country">Country:</label>
+        <select id="country" name="country">
+            <option value="usa">United States</option>
+            <option value="canada">Canada</option>
+            <option value="uk">United Kingdom</option>
+        </select>
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" rows="4" cols="40">
+</textarea>
+    </form>
+    <fieldset>
+        <legend>Personal Details</legend>
+        <label for="fname">First Name:</label>
+        <input type="text" id="fname" name="fname">
+    </fieldset>
+</body>
+
+</html>

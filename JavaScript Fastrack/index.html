@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>JavaScript Test</title>
+
+    <!-- External JavaScript file -->
+    <script src="controlflow.js" defer></script>
+</head>
+
+<body>
+
+    <h1>JavaScript Demo</h1>
+
+    <p id="message">
+        Click the button to see JavaScript in action.
+    </p>
+
+    <button id="changeButton">
+        Click Me
+    </button>
+
+    <hr>
+
+    <h2>Inline JavaScript</h2>
+
+    <button onclick="showInlineMessage()">
+        Test Inline JavaScript
+    </button>
+
+    <p id="inlineMessage"></p>
+
+
+    <!-- Inline JavaScript -->
+    <script>
+        console.log("Hello from inline JavaScript!");
+
+        function showInlineMessage() {
+            document.getElementById("inlineMessage").textContent =
+                "This message was created using inline JavaScript!";
+        }
+    </script>
+
+</body>
+</html>

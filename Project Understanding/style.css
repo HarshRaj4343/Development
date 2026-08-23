@@ -1,0 +1,156 @@
+/* ============================================================
+   BASIC CSS PRIMER (read this first!)
+
+   A CSS rule looks like this:
+
+       selector {
+           property: value;
+       }
+
+   - The "selector" picks which HTML element(s) to style
+     (a tag name, a .class, or an #id).
+   - Everything inside { } is a list of property: value pairs,
+     each ending in a semicolon.
+
+   That's really it. Everything below is just that pattern,
+   repeated for different elements.
+   ============================================================ */
+
+
+/* "*" is the universal selector -- it matches EVERY element.
+   We use it here to reset some default spacing browsers add,
+   so our own spacing choices are predictable. */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* makes width/padding math simpler */
+}
+
+/* "body" matches the <body> tag -- i.e. the whole visible page */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    display: flex;             /* centers the .app box on the page */
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+/* ".app" matches any element with class="app" --
+   in our HTML, that's the outer <div> wrapping everything */
+.app {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 420px;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 22px;
+    margin-bottom: 16px;
+    color: #222;
+}
+
+/* "#task-form" matches the ONE element with id="task-form".
+   IDs are for single, unique elements; classes are for groups. */
+#task-form {
+    display: flex;
+    gap: 8px;           /* space between the input and button */
+    margin-bottom: 16px;
+}
+
+#task-input {
+    flex: 1;             /* input grows to fill available space */
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* You can target elements when the user interacts with them.
+   ":focus" applies only while the input is selected/typing. */
+#task-input:focus {
+    outline: none;
+    border-color: #4a90d9;
+}
+
+#task-form button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #4a90d9;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* ":hover" applies only while the mouse is over the element */
+#task-form button:hover {
+    background-color: #3a7bc0;
+}
+
+.filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.filter-btn {
+    flex: 1;
+    padding: 6px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* ".filter-btn.active" -- no space between the two classes means
+   "an element that has BOTH classes at once". JavaScript will
+   add/remove the "active" class to show which filter is selected. */
+.filter-btn.active {
+    background-color: #4a90d9;
+    color: white;
+    border-color: #4a90d9;
+}
+
+#task-list {
+    list-style: none;   /* removes the default bullet points */
+}
+
+/* This styles every <li> that JavaScript creates inside the list */
+#task-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 4px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+/* JavaScript adds the "done" class to a task's <li> when it's
+   checked off. This rule only applies to THOSE tasks. */
+#task-list li.done span {
+    text-decoration: line-through;
+    color: #999;
+}
+
+#task-list li span {
+    flex: 1;
+}
+
+#task-list li button {
+    border: none;
+    background: none;
+    color: #c0392b;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+#task-count {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #777;
+    text-align: center;
+}
