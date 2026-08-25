@@ -1,0 +1,1 @@
+// it always runs in the background and cleans up the memory that is no longer needed by the program. It helps to prevent memory leaks and improve the performance of the application.
