@@ -1,96 +1,343 @@
-*{
-    margin:0;
-    padding:0;
+:root {
+    --bg: #0a0d12;
+    --panel: #12161d;
+    --panel-raised: #171c25;
+    --field: #0d1015;
+    --border: #262c38;
+
+    --text: #e7e9ee;
+    --text-dim: #8890a0;
+    --text-faint: #545c6c;
+
+    --amber: #f2b84b;
+
+    --easy: #3ddc84;
+    --easy-track: #17301f;
+    --easy-tint: rgba(61, 220, 132, .08);
+
+    --medium: #f2b84b;
+    --medium-track: #3a2c14;
+    --medium-tint: rgba(242, 184, 75, .08);
+
+    --hard: #f2545b;
+    --hard-track: #3a171a;
+    --hard-tint: rgba(242, 84, 91, .08);
+
+    --radius: 20px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
-    font-family:monospace;
 }
 
-body{
-    background-color: aliceblue;
-    color:red;
-    height: 100vh;
+html,
+body {
+    height: 100%;
+}
+
+body {
+    min-height: 100vh;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    padding: 2rem 1.25rem;
+    font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+    color: var(--text);
+    background:
+        radial-gradient(circle at 18% -10%, rgba(242, 184, 75, .07), transparent 55%),
+        radial-gradient(circle at 100% 110%, rgba(61, 220, 132, .06), transparent 50%),
+        var(--bg);
 }
 
-.leetcontainer{
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    background-color: bisque;
-    padding: 20px;
-    border-radius: 45px;
-    
-}
-
-h1{
-    text-align: center;
-    font-size: 2rem;
-    color: black;
-}
-
-.userspecific{
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    justify-content: start;
-}
-
-.userinputcontainer{
-    display: flex;
-    gap: 0.5rem;
+.leetcontainer {
     width: 100%;
+    max-width: 440px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 30px 60px -25px rgba(0, 0, 0, .65), 0 0 0 1px rgba(255, 255, 255, .02) inset;
 }
 
-#leeco{
-    width: 100%;
-    padding: 5px;
-    border-radius: 5px;
-    border: 2px solid #ccc;
-    font-size: 1rem;
-    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+/* fake terminal chrome */
+.termbar {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .85rem 1.1rem;
+    background: var(--panel-raised);
+    border-bottom: 1px solid var(--border);
 }
 
-#SearchButton{
-    padding: 5px 10px;
-    border-radius: 5px;
-    border: none;
-    background-color: #4CAF50;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
+.termdots {
+    display: flex;
+    gap: 6px;
 }
 
-/* .stats {
-    display: none;
-} */
-/* to hide (also can use hidden keyword in html */
-
-.circle{
-    width: 100px;
-    height: 100px;
+.dot {
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    border: 5px solid #5776b9;
+}
+
+.dot-easy {
+    background: var(--easy);
+}
+
+.dot-medium {
+    background: var(--medium);
+}
+
+.dot-hard {
+    background: var(--hard);
+}
+
+.termtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .72rem;
+    color: var(--text-faint);
+    letter-spacing: .02em;
+}
+
+.panelbody {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    padding: 1.75rem 1.75rem 2rem;
+}
+
+.heading h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800;
+    font-size: clamp(1.4rem, 5vw, 1.8rem);
+    letter-spacing: -0.01em;
+    color: var(--text);
+}
+
+.heading h1 .path {
+    color: var(--amber);
+    font-weight: 600;
+    opacity: .85;
+}
+
+.tagline {
+    margin-top: .4rem;
+    font-size: .82rem;
+    color: var(--text-dim);
+}
+
+.userspecific {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.fieldlabel {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .68rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--text-faint);
+}
+
+.userinputcontainer {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+    background: var(--field);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.userinputcontainer:focus-within {
+    border-color: var(--amber);
+    box-shadow: 0 0 0 3px rgba(242, 184, 75, .15);
+}
+
+.prompt {
+    color: var(--amber);
+    font-weight: 700;
+    padding-left: .65rem;
+    user-select: none;
+}
+
+#leeco {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .92rem;
+    padding: .7rem .6rem;
+    caret-color: var(--amber);
+}
+
+#leeco::placeholder {
+    color: var(--text-faint);
+}
+
+#SearchButton {
+    padding: .68rem 1.1rem;
+    border-radius: 7px;
+    border: none;
+    background: var(--amber);
+    color: #1a1305;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: .82rem;
+    letter-spacing: .02em;
+    cursor: pointer;
+    transition: transform .12s ease, filter .12s ease, opacity .12s ease;
+}
+
+#SearchButton:hover:not(:disabled) {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+}
+
+#SearchButton:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+#SearchButton:disabled {
+    opacity: .55;
+    cursor: progress;
+}
+
+#SearchButton:focus-visible,
+#leeco:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+}
+
+.stats {
+    border-top: 1px dashed var(--border);
+    padding-top: 1.5rem;
+}
+
+.stats p {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .85rem;
+    text-align: center;
+    padding: .5rem 0;
+}
+
+.progress {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    justify-content: space-evenly;
+    align-items: flex-start;
+}
+
+.progressitem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .6rem;
+}
+
+.circle {
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.5rem;
-    color: white;
+    font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
-    background: conic-gradient(#4CAF50 var(--progress-degree, 0%), #9d2d2d 0deg);
-    
+    font-size: .72rem;
+    color: var(--text);
+    background: conic-gradient(var(--ring-color) var(--progress-degree, 0%), var(--ring-track) 0deg);
 }
 
-.circle span{
+.circle::before {
+    content: "";
+    position: absolute;
+    inset: 9px;
+    border-radius: 50%;
+    background: var(--panel);
+}
+
+.circle span {
     position: relative;
     z-index: 1;
+    text-align: center;
+    line-height: 1.2;
 }
 
-.progress{
-    display: flex;
-    gap: 1rem;
-    justify-content: space-evenly;
-    align-items: center;
+.easyprogress {
+    --ring-color: var(--easy);
+    --ring-track: var(--easy-track);
+}
+
+.mediumprogress {
+    --ring-color: var(--medium);
+    --ring-track: var(--medium-track);
+}
+
+.hardprogress {
+    --ring-color: var(--hard);
+    --ring-track: var(--hard-track);
+}
+
+.difftag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .66rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+}
+
+.diff-easy {
+    color: var(--easy);
+    background: var(--easy-tint);
+    border-color: rgba(61, 220, 132, .3);
+}
+
+.diff-medium {
+    color: var(--medium);
+    background: var(--medium-tint);
+    border-color: rgba(242, 184, 75, .3);
+}
+
+.diff-hard {
+    color: var(--hard);
+    background: var(--hard-tint);
+    border-color: rgba(242, 84, 91, .3);
+}
+
+.statscard-note {
+    margin-top: 1.1rem;
+    text-align: center;
+    font-size: .74rem;
+    color: var(--text-faint);
+}
+
+@media (max-width: 420px) {
+    .circle {
+        width: 76px;
+        height: 76px;
+        font-size: .62rem;
+    }
+
+    .panelbody {
+        padding: 1.5rem 1.25rem 1.75rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+    }
 }

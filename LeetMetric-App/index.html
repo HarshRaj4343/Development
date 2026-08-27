@@ -6,50 +6,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LeetMetric</title>
     <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div class="leetcontainer">
-        <div class="heading">
-            <h1>LeetMetric</h1>
-        </div>
-        <div class="userspecific">
-            <p>Enter your username below:</p>
-            <div class="userinputcontainer">
-                <input type="text" placeholder="Enter your Username here" id="leeco">
-                <button id="SearchButton">Search</button>
+    <main class="leetcontainer">
+
+        <div class="termbar">
+            <div class="termdots">
+                <span class="dot dot-easy"></span>
+                <span class="dot dot-medium"></span>
+                <span class="dot dot-hard"></span>
             </div>
+            <span class="termtitle">leetmetric — zsh</span>
         </div>
-        <div class="stats">
-            <div class="progress">
-                <div class="progressitem">
-                    <div class="easyprogress circle">
-                        <span id="easylabel">
-                        </span>
-                        Easy
-                    </div>
-                </div>
-                <div class="progressitem">
-                    <div class="mediumprogress circle">
-                        <span id="mediumlabel">
-                        </span>
-                        medium
-                    </div>
-                </div>
-                <div class="progressitem">
-                    <div class="hardprogress circle">
-                        <span id="hardlabel">
-                        </span>
-                        hard
-                    </div>
+
+        <div class="panelbody">
+
+            <div class="heading">
+                <h1><span class="path">~/</span>LeetMetric</h1>
+                <p class="tagline">Pull a solved-problem breakdown straight from LeetCode.</p>
+            </div>
+
+            <div class="userspecific">
+                <label class="fieldlabel" for="leeco">Username</label>
+                <div class="userinputcontainer">
+                    <span class="prompt" aria-hidden="true">$</span>
+                    <input type="text" placeholder="e.g. neetcode" id="leeco" autocomplete="off" spellcheck="false">
+                    <button id="SearchButton">Search</button>
                 </div>
             </div>
-            <div class="statscard">
-                <!-- populate using js -->
+
+            <div class="stats" aria-live="polite">
+                <div class="progress">
+                    <div class="progressitem">
+                        <div class="easyprogress circle">
+                            <span id="easylabel"></span>
+                        </div>
+                        <span class="difftag diff-easy">Easy</span>
+                    </div>
+                    <div class="progressitem">
+                        <div class="mediumprogress circle">
+                            <span id="mediumlabel"></span>
+                        </div>
+                        <span class="difftag diff-medium">Medium</span>
+                    </div>
+                    <div class="progressitem">
+                        <div class="hardprogress circle">
+                            <span id="hardlabel"></span>
+                        </div>
+                        <span class="difftag diff-hard">Hard</span>
+                    </div>
+                </div>
+                <div class="statscard">
+                    <p class="statscard-note">Rings fill in as your solved counts come back from LeetCode.</p>
+                </div>
             </div>
+
         </div>
-    </div>
+    </main>
     <script src="script.js"></script>
 </body>
 
